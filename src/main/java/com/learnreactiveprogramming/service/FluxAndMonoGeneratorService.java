@@ -7,9 +7,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-public class FluxAndMonoGeneratedService {
+public class FluxAndMonoGeneratorService {
 
     public Flux<String> namesFlux() {
         return Flux.fromIterable(List.of("alex", "ben", "chloe"))
@@ -154,7 +153,7 @@ public class FluxAndMonoGeneratedService {
     }
 
     public static void main(String[] args) {
-        FluxAndMonoGeneratedService service = new FluxAndMonoGeneratedService();
+        FluxAndMonoGeneratorService service = new FluxAndMonoGeneratorService();
         service.namesFlux()
                 .subscribe(name -> System.out.println("Name is : " + name));
 

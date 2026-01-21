@@ -1,13 +1,12 @@
 package com.learnreactiveprogramming.service;
 
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.util.List;
 
 public class FluxAndMonoGeneratorServiceTest {
-    FluxAndMonoGeneratedService service = new FluxAndMonoGeneratedService();
+    FluxAndMonoGeneratorService service = new FluxAndMonoGeneratorService();
 
     @Test
     void namesFlux() {
