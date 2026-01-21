@@ -6,6 +6,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FluxAndMonoGeneratedService {
@@ -49,6 +50,28 @@ public class FluxAndMonoGeneratedService {
                 .log();
     }
 
+    public Mono<List<String>> namesMono_flatmap(int stringLength){
+        return Mono.just("alex")
+                .map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength)
+                .flatMap(this::splitStringMono)
+                .log();
+    }
+
+    private Mono<List<String>> splitStringMono(String s) {
+        var charArray = s.split("");
+        var charList = List.of(charArray);
+        return Mono.just(charList);
+    }
+
+    public Flux<String> namesMono_flatmapMany(int stringLength){
+        return Mono.just("alex")
+                .map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength)
+                .flatMapMany(this::splitString)
+                .log();
+    }
+
     public Flux<String> namesFlaxFlatMap(int stringLength){
         return Flux.fromIterable(List.of("alex", "ben", "chloe", "adam", "jill", "jack"))
                 .map(String::toUpperCase)
@@ -82,6 +105,51 @@ public class FluxAndMonoGeneratedService {
                 .map(String::toUpperCase)
                 .filter(s -> s.length() > stringLength)
                 .concatMap(this::splitStringWithDelay)
+                .log();
+    }
+
+    public Flux<String> namesFlux_Transform(int stringLength){
+
+        Function<Flux<String>, Flux<String>> fluxFunction = name -> name.map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength);
+
+        return Flux.fromIterable(List.of("alex", "ben", "chloe", "adam", "jill", "jack"))
+                .transform(fluxFunction)
+                .flatMap(this::splitString)
+                .defaultIfEmpty("default")
+                .log();
+    }
+
+    public Flux<String> namesFlux_Transform_switchIfEmpty(int stringLength){
+
+        Function<Flux<String>, Flux<String>> fluxFunction = name -> name.map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength)
+                .flatMap(this::splitString);
+
+        var defaultFlux = Flux.just("default")
+                .transform(fluxFunction);
+
+        return Flux.fromIterable(List.of("alex", "ben", "chloe", "adam", "jill", "jack"))
+                .transform(fluxFunction)
+                .defaultIfEmpty(String.valueOf(defaultFlux))
+                .log();
+    }
+
+    public Flux<String> namesMono_map_filter_defaultEmpty(int stringLength){
+        return Mono.just("alex")
+                .map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength)
+                .flatMapMany(this::splitString)
+                .defaultIfEmpty("default")
+                .log();
+    }
+
+    public Flux<String> namesMono_map_filter_switchIfEmpty(int stringLength){
+        return Mono.just("alex")
+                .map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength)
+                .flatMapMany(this::splitString)
+                .switchIfEmpty(Flux.just("default"))
                 .log();
     }
 
